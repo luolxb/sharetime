@@ -1,0 +1,92 @@
+server:
+    port: 8088
+#    servlet:
+#        context-path: /shareTime
+
+spring:
+    datasource:  # 数据源配置
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/share_time?useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2B8
+        username: root
+        password: 123456
+        #        druid:
+        #            stat-view-servlet:
+        #                enabled: true
+        type: com.alibaba.druid.pool.DruidDataSource
+        # 下面为连接池的补充设置，应用到上面所有数据源中
+        platform: mysql
+        initialSize: 1
+        minIdle: 3
+        maxActive: 20
+        maxWait: 60000
+        timeBetweenEvictionRunsMillis: 60000
+        minEvictableIdleTimeMillis: 30000
+        validationQuery: select 'x'
+        testWhileIdle: true
+        testOnBorrow: false
+        testOnReturn: false
+        poolPreparedStatements: true
+        maxPoolPreparedStatementPerConnectionSize: 20
+        # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+        filters: stat,wall,slf4j
+        # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+        connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+    jackson:  # json配置
+        #参数意义：
+        #JsonInclude.Include.ALWAYS       默认
+        #JsonInclude.Include.NON_DEFAULT   属性为默认值不序列化
+        #JsonInclude.Include.NON_EMPTY     属性为 空（””） 或者为 NULL 都不序列化
+        #JsonInclude.Include.NON_NULL      属性为NULL  不序列化
+        default-property-inclusion: ALWAYS
+        time-zone: GMT+8
+        date-format: yyyy-MM-dd HH:mm:ss
+    redis:
+        host: 127.0.0.1
+        port: 6379
+    #    rabbitmq:
+    #        host: 192.168.44.129
+    #        port: 5672
+    #        username: ruosen
+    #        password: 123456
+    #        virtual-host: /ruosen
+    #        listener:
+    #            direct:
+    #                retry:
+    #                    enabled: true
+    #                    max-attempts: 3
+    application:
+        name: share-time
+amqp:
+    config:
+        exchange: log.direct
+        queue:
+            info: log.info
+            inforouting:
+                key: log.info.routing.key
+            error: log.error
+            errorrouting:
+                key: log.error.routing.key
+#    resources:   # 配置静态文件路径
+#        static-locations: classpath:/static/
+
+# mybatis-plus 配置
+mybatis-plus:
+    mapper-locations: classpath*:/mapper/*.xml   #把xml文件放在com.XX.mapper.*中可能会出现找到的问题，这里把他放在resource下的mapper中
+    global-config:
+        db-config:
+            id-type: auto
+    configuration:
+        map-underscore-to-camel-case: true
+        cache-enabled: false
+    type-aliases-package: com.ruosen.basic.ruosenbasic.model.po
+
+# 日志配置
+logging:
+    pattern:
+        level: INFO
+
+
+uploadPice: D:/upload/
+pathPatterns: /upload/**
+resourceLocations: d:/upload/
+
